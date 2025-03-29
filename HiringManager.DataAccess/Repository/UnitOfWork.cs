@@ -1,7 +1,5 @@
 ﻿using HiringManager.DataAccess.Data;
 using HiringManager.DataAccess.Repository.IRepository;
-using HiringManager.Models;
-using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +8,20 @@ using System.Threading.Tasks;
 
 namespace HiringManager.DataAccess.Repository
 {
-    public class ApplicationRepository : Repository<ApplicationDetail>, IApplicationRepository
+    public class UnitOfWork : IUnitOfWork
     {
         private ApplicationDbContext _db;
+        public IApplicationRepository Application { get; private set; }
 
-        public ApplicationRepository(ApplicationDbContext db) : base(db)
+        public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
+            Application = new ApplicationRepository(_db);
         }
 
-        public void update(ApplicationDetail entity)
+        public void Save()
         {
-            _db.ApplicationSet.Update(entity);
+            _db.SaveChanges();
         }
     }
 }

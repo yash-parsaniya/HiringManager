@@ -1,10 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using HiringManager.DataAccess.Data;
 using HiringManager.DataAccess.Repository.IRepository;
 using HiringManager.DataAccess.Repository;
-using HiringManager.DataAccess.UnitOfWork;
-using HiringManager.DataAccess.Services;
-using HiringManager.DataAccess.Servides;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,11 +12,7 @@ builder.Services.AddSession();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-builder.Services.AddScoped<IApplicationNumberGenerator, ApplicationNumberGenerator>();
 
 var app = builder.Build();
 
@@ -39,6 +32,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=ApplicationDetails}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

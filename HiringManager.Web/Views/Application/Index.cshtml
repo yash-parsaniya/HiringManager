@@ -1,4 +1,6 @@
-﻿<div class="card shadow border-0 mt-4">
+﻿@model List<ApplicationDetail>
+
+<div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
@@ -11,7 +13,7 @@
             <div class="col-6">
             </div>
             <div class="col-6 text-end">
-                <a asp-controller="ApplicationDetails" asp-action="Create" class="btn btn-primary">
+                <a asp-controller="Application" asp-action="Create" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Apply for a Job
                 </a>
             </div>
@@ -20,23 +22,23 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    @* <th>Id</th> *@
+                    <th>Id</th>
                     <th>ApplicationID</th>
                     <th>StageID</th>
                     <th>SessionID</th>
                     <th>CreatedBy</th>
                     <th>CreatedDate</th>
-                    <th></th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var obj in Model)
                 {
                     <tr>
-                        @* <td>@obj.Id</td> *@
-                        <td>@obj.ApplicationID</td>
-                        <td>@obj.StageID</td>
-                        <td>@obj.SessionID</td>
+                        <td>@obj.Id</td>
+                        <td>@obj.ApplicationId</td>
+                        <td>@obj.StageId</td>
+                        <td>@obj.SessionId</td>
                         <td>@obj.CreatedBy</td>
                         <td>@obj.CreatedDate</td>
                         <td>

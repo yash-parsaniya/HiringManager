@@ -1,13 +1,14 @@
 ﻿using HiringManager.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace HiringManager.DataAccess.Repository.IRepository
 {
     public interface IApplicationRepository : IRepository<ApplicationDetail>
     {
-        Task<ApplicationDetail?> GetDraftApplicationAsync(string sessionId);
-        Task<ApplicationDetail> CreateDraftApplicationAsync(string sessionId);
-        Task AddPersonalDetailsAsync(ApplicationDetail application, PersonalDetail personalDetail);
-        Task SubmitApplicationAsync(ApplicationDetail application);
-        Task<bool> HasExistingApplicationAsync(string email);
+        void update(ApplicationDetail entity);
     }
 }

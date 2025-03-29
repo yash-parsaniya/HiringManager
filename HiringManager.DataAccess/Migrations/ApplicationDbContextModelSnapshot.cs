@@ -34,8 +34,8 @@ namespace HiringManager.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ApplicationId")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -44,16 +44,18 @@ namespace HiringManager.DataAccess.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsSubmitted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SessionId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StageId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Submitted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("UpdatedBy")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -61,11 +63,7 @@ namespace HiringManager.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationId")
-                        .IsUnique()
-                        .HasFilter("[ApplicationId] IS NOT NULL");
-
-                    b.ToTable("ApplicationDetails");
+                    b.ToTable("ApplicationSet");
                 });
 
             modelBuilder.Entity("HiringManager.Models.EducationDetail", b =>
@@ -81,13 +79,11 @@ namespace HiringManager.DataAccess.Migrations
 
                     b.Property<string>("CollegeUniversity")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HighestQualification")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PassoutYear")
                         .HasColumnType("int");
@@ -97,14 +93,14 @@ namespace HiringManager.DataAccess.Migrations
 
                     b.Property<string>("Stream")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationDetailId");
+                    b.HasIndex("ApplicationDetailId")
+                        .IsUnique();
 
-                    b.ToTable("EducationDetails");
+                    b.ToTable("EducationSet");
                 });
 
             modelBuilder.Entity("HiringManager.Models.ExperienceDetail", b =>
@@ -120,32 +116,29 @@ namespace HiringManager.DataAccess.Migrations
 
                     b.Property<string>("CurrentCompany")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PreviousCompanies")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Roles")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Skills")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalExperience")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationDetailId");
+                    b.HasIndex("ApplicationDetailId")
+                        .IsUnique();
 
-                    b.ToTable("ExperienceDetails");
+                    b.ToTable("ExperienceSet");
                 });
 
             modelBuilder.Entity("HiringManager.Models.PersonalDetail", b =>
@@ -158,13 +151,9 @@ namespace HiringManager.DataAccess.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ApplicationDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ApplicationDetailId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -173,8 +162,7 @@ namespace HiringManager.DataAccess.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -185,16 +173,14 @@ namespace HiringManager.DataAccess.Migrations
                     b.HasIndex("ApplicationDetailId")
                         .IsUnique();
 
-                    b.HasIndex("ApplicationDetailId1");
-
-                    b.ToTable("PersonalDetails");
+                    b.ToTable("PersonalSet");
                 });
 
             modelBuilder.Entity("HiringManager.Models.EducationDetail", b =>
                 {
                     b.HasOne("HiringManager.Models.ApplicationDetail", "ApplicationDetail")
-                        .WithMany("EducationDetails")
-                        .HasForeignKey("ApplicationDetailId")
+                        .WithOne("EducationDetail")
+                        .HasForeignKey("HiringManager.Models.EducationDetail", "ApplicationDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -204,8 +190,8 @@ namespace HiringManager.DataAccess.Migrations
             modelBuilder.Entity("HiringManager.Models.ExperienceDetail", b =>
                 {
                     b.HasOne("HiringManager.Models.ApplicationDetail", "ApplicationDetail")
-                        .WithMany("ExperienceDetails")
-                        .HasForeignKey("ApplicationDetailId")
+                        .WithOne("ExperienceDetail")
+                        .HasForeignKey("HiringManager.Models.ExperienceDetail", "ApplicationDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -214,26 +200,25 @@ namespace HiringManager.DataAccess.Migrations
 
             modelBuilder.Entity("HiringManager.Models.PersonalDetail", b =>
                 {
-                    b.HasOne("HiringManager.Models.ApplicationDetail", null)
+                    b.HasOne("HiringManager.Models.ApplicationDetail", "ApplicationDetail")
                         .WithOne("PersonalDetail")
                         .HasForeignKey("HiringManager.Models.PersonalDetail", "ApplicationDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("HiringManager.Models.ApplicationDetail", "ApplicationDetail")
-                        .WithMany()
-                        .HasForeignKey("ApplicationDetailId1");
 
                     b.Navigation("ApplicationDetail");
                 });
 
             modelBuilder.Entity("HiringManager.Models.ApplicationDetail", b =>
                 {
-                    b.Navigation("EducationDetails");
+                    b.Navigation("EducationDetail")
+                        .IsRequired();
 
-                    b.Navigation("ExperienceDetails");
+                    b.Navigation("ExperienceDetail")
+                        .IsRequired();
 
-                    b.Navigation("PersonalDetail");
+                    b.Navigation("PersonalDetail")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
