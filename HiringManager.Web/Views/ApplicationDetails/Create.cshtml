@@ -1,0 +1,447 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Application Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body,
+        html {
+          height: 100%;
+          margin: 0;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .form-container {
+          width: 800px;
+          height: 650px;
+          background: white;
+          padding: 30px;
+          border-radius: 15px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          display: flex;
+          flex-direction: column;
+        }
+        .form-header {
+          flex-shrink: 0;
+        }
+        .form-body {
+          flex-grow: 1;
+          overflow-y: auto;
+          margin: 15px 0;
+          padding-right: 10px;
+        }
+        .progress-container {
+          margin: 15px 0;
+          flex-shrink: 0;
+        }
+        .progress {
+          height: 10px;
+          background: #e9ecef;
+          border-radius: 5px;
+          overflow: visible;
+        }
+        .progress-bar {
+          height: 10px;
+          background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+          transition: width 0.4s ease;
+          border-radius: 5px;
+          position: relative;
+        }
+        .progress-bar::after {
+          content: "";
+          position: absolute;
+          right: -8px;
+          top: -3px;
+          width: 16px;
+          height: 16px;
+          background: #4facfe;
+          border-radius: 50%;
+          border: 3px solid white;
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .step {
+          font-weight: 600;
+          color: #495057;
+          cursor: pointer;
+          font-size: 1.1rem;
+          padding: 15px;
+          margin: 8px 0;
+          background: #f8f9fa;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          border-left: 4px solid transparent;
+        }
+        .step:hover {
+          background: #e9ecef;
+        }
+        .step.active {
+          color: #4facfe;
+          border-left: 4px solid #4facfe;
+          background: #f1f8fe;
+        }
+        .step.completed {
+          color: #28a745;
+          border-left: 4px solid #28a745;
+        }
+        .content {
+          display: none;
+          padding: 20px;
+          border-radius: 8px;
+          background: white;
+          margin-bottom: 20px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+          border: 1px solid #e9ecef;
+        }
+        .toggle-icon {
+          float: right;
+          transition: transform 0.3s ease;
+        }
+        .step.active .toggle-icon {
+          transform: rotate(180deg);
+        }
+        .button-group {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 25px;
+          flex-shrink: 0;
+        }
+        .btn-custom {
+          padding: 8px 25px;
+          border-radius: 30px;
+          font-weight: 500;
+          min-width: 120px;
+        }
+        .form-label {
+          font-weight: 500;
+          margin-top: 10px;
+          color: #495057;
+        }
+        .form-control,
+        .form-select {
+          border-radius: 6px;
+          padding: 10px 15px;
+          border: 1px solid #ced4da;
+        }
+        .form-control:focus,
+        .form-select:focus {
+          border-color: #4facfe;
+          box-shadow: 0 0 0 0.25rem rgba(79, 172, 254, 0.25);
+        }
+        .required-field::after {
+          content: " *";
+          color: #dc3545;
+        }
+        h2 {
+          color: #343a40;
+          margin-bottom: 15px;
+          font-weight: 700;
+          position: relative;
+          padding-bottom: 10px;
+          text-align: center;
+        }
+        h2::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 80px;
+          height: 3px;
+          background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+          border-radius: 3px;
+        }
+        .error-message {
+          color: #dc3545;
+          font-size: 0.875rem;
+          margin-top: 0.25rem;
+          display: none;
+        }
+        .is-invalid {
+          border-color: #dc3545 !important;
+        }
+        .is-invalid + .error-message,
+        .is-invalid ~ .error-message {
+          display: block;
+        }
+        .form-check-input.is-invalid + .form-check-label {
+          color: #dc3545;
+        }
+        .save-draft-btn {
+          background-color: #6c757d;
+          border-color: #6c757d;
+          margin-right: 10px;
+        }
+        .save-draft-btn:hover {
+          background-color: #5a6268;
+          border-color: #545b62;
+        }
+        .form-body::-webkit-scrollbar {
+          width: 8px;
+        }
+        .form-body::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+        }
+        .form-body::-webkit-scrollbar-thumb {
+          background: #c1c1c1;
+          border-radius: 10px;
+        }
+        .form-body::-webkit-scrollbar-thumb:hover {
+          background: #a8a8a8;
+        }
+        @@media (max-width: 850px) {
+          .form-container {
+            width: 95%;
+            height: 90vh;
+            padding: 20px;
+            margin: 10px;
+          }
+          .step {
+            font-size: 1rem;
+            padding: 12px;
+          }
+          .button-group {
+            flex-wrap: wrap;
+          }
+          .save-draft-btn {
+            margin-right: 0;
+            margin-bottom: 10px;
+            width: 100%;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Job Application Form</h2>
+
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-body" id="formBody">
+            <div class="step active" id="step0" onclick="toggleSection(0)">
+                <i class="fas fa-user me-2"></i>Personal Information
+                <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="content" id="section0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label required-field">Full Name</label>
+                        <input type="text"
+                               class="form-control mb-1"
+                               placeholder="Yash Parsaniya"
+                               required />
+                        <div class="error-message">Please enter your full name</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required-field">Email</label>
+                        <input type="email"
+                               class="form-control mb-1"
+                               placeholder="yash@example.com"
+                               required />
+                        <div class="error-message">Please enter a valid email</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label required-field">Phone</label>
+                        <input type="tel"
+                               class="form-control mb-1"
+                               placeholder="987654321"
+                               required
+                               pattern="[0-9]{10}" />
+                        <div class="error-message">
+                            Please enter a 10-digit phone number
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required-field">City</label>
+                        <input type="text"
+                               class="form-control mb-1"
+                               placeholder="New York"
+                               required />
+                        <div class="error-message">Please enter your city</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label required-field">Pin Code</label>
+                        <input type="text"
+                               class="form-control mb-1"
+                               placeholder="10001"
+                               required />
+                        <div class="error-message">Please enter your pin code</div>
+                    </div>
+                </div>
+                <label class="form-label required-field">Complete Address</label>
+                <textarea class="form-control mb-1"
+                          rows="3"
+                          placeholder="123 Main St, Apt 4B"
+                          required></textarea>
+                <div class="error-message">Please enter your complete address</div>
+            </div>
+
+            <div class="step" id="step1" onclick="toggleSection(1)">
+                <i class="fas fa-graduation-cap me-2"></i>Qualification
+                <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="content" id="section1">
+                <label class="form-label required-field">Highest Qualification</label>
+                <select class="form-select mb-1" required>
+                    <option value="" selected disabled>
+                        Select your highest qualification
+                    </option>
+                    <option>High School</option>
+                    <option>Bachelor's Degree</option>
+                    <option>Master's Degree</option>
+                    <option>PhD</option>
+                    <option>Other</option>
+                </select>
+                <div class="error-message">
+                    Please select your highest qualification
+                </div>
+
+                <label class="form-label required-field">College/University</label>
+                <input type="text"
+                       class="form-control mb-1"
+                       placeholder="University of Example"
+                       required />
+                <div class="error-message">Please enter your college/university</div>
+
+                <label class="form-label">Field of Study</label>
+                <input type="text"
+                       class="form-control mb-3"
+                       placeholder="Computer Science" />
+
+                <label class="form-label">Graduation Year</label>
+                <input type="number"
+                       class="form-control mb-3"
+                       placeholder="2020"
+                       min="1900"
+                       max="2099" />
+            </div>
+
+            <div class="step" id="step2" onclick="toggleSection(2)">
+                <i class="fas fa-briefcase me-2"></i>Skills & Work Experience
+                <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="content" id="section2">
+                <label class="form-label required-field">Skills (comma separated)</label>
+                <textarea class="form-control mb-1"
+                          rows="3"
+                          placeholder="JavaScript, HTML, CSS, Project Management"
+                          required></textarea>
+                <div class="error-message">Please enter your skills</div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label required-field">Current Employer</label>
+                        <input type="text"
+                               class="form-control mb-1"
+                               placeholder="Company Inc."
+                               required />
+                        <div class="error-message">
+                            Please enter your current employer
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required-field">Job Title</label>
+                        <input type="text"
+                               class="form-control mb-1"
+                               placeholder="Software Developer"
+                               required />
+                        <div class="error-message">Please enter your job title</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label required-field">Years of Experience</label>
+                        <input type="number"
+                               class="form-control mb-1"
+                               placeholder="5"
+                               min="0"
+                               max="50"
+                               required />
+                        <div class="error-message">Please enter years of experience</div>
+                    </div>
+                </div>
+                <label class="form-label required-field">Work Summary</label>
+                <textarea class="form-control mb-1"
+                          rows="4"
+                          placeholder="Brief description of your responsibilities and achievements..."
+                          required></textarea>
+                <div class="error-message">Please enter your work summary</div>
+            </div>
+
+            <div class="step" id="step3" onclick="toggleSection(3)">
+                <i class="fas fa-file-upload me-2"></i>Supporting Documents
+                <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="content" id="section3">
+                <label class="form-label required-field">Resume (PDF or DOC)</label>
+                <input type="file"
+                       class="form-control mb-1"
+                       required
+                       accept=".pdf,.doc,.docx" />
+                <div class="error-message">Please upload your resume</div>
+
+                <label class="form-label">Cover Letter (Optional)</label>
+                <input type="file"
+                       class="form-control mb-3"
+                       accept=".pdf,.doc,.docx" />
+
+                <label class="form-label">Profile Photo (Optional)</label>
+                <input type="file" class="form-control mb-3" accept="image/*" />
+
+                <div class="form-check mb-1">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="policyCheck"
+                           required />
+                    <label class="form-check-label required-field" for="policyCheck">I agree to the terms and privacy policy</label>
+                    <div class="error-message">You must agree to the terms</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-outline-secondary btn-custom"
+                    id="backButton"
+                    style="visibility: hidden">
+                <i class="fas fa-arrow-left me-2"></i>Back
+            </button>
+            <div class="d-flex">
+                <button class="btn save-draft-btn btn-custom"
+                        id="saveDraftButton"
+                        style="display: none">
+                    <i class="fas fa-save me-2"></i>Save Draft
+                </button>
+                <button class="btn btn-primary btn-custom" id="nextButton">
+                    Next <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+ @section Scripts { 
+     @{ 
+         <partial name="_ValidationScriptsPartial" /> 
+     } 
+ } 
