@@ -1,0 +1,49 @@
+﻿@using HiringManager.Models.ViewModel
+@model ApplicationFormViewModel
+
+<form asp-action="SaveEducationDetails" method="post">
+    <input type="hidden" name="sessionId" value="@Model.ApplicationDetails.SessionId" />
+
+    <div class="form-group">
+        <label asp-for="EducationDetails.HighestQualification">Highest Qualification</label>
+        <input asp-for="EducationDetails.HighestQualification" class="form-control" />
+        <span asp-validation-for="EducationDetails.HighestQualification" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EducationDetails.CollegeUniversity">College/University</label>
+        <input asp-for="EducationDetails.CollegeUniversity" class="form-control" />
+        <span asp-validation-for="EducationDetails.CollegeUniversity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EducationDetails.Stream">Stream/Field of Study</label>
+        <input asp-for="EducationDetails.Stream" class="form-control" />
+        <span asp-validation-for="EducationDetails.Stream" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="EducationDetails.PassoutYear">Passout Year</label>
+                <input asp-for="EducationDetails.PassoutYear" class="form-control" />
+                <span asp-validation-for="EducationDetails.PassoutYear" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="EducationDetails.PointerPercentage">Pointer/Percentage</label>
+                <input asp-for="EducationDetails.PointerPercentage" class="form-control" />
+                <span asp-validation-for="EducationDetails.PointerPercentage" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-4">
+        <button type="submit" class="btn btn-primary">Save & Next</button>
+        <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("ApplicationForm", new { sessionId = Model.ApplicationDetails.SessionId, stage = 1 })'">
+            Back
+        </button>
+        <button type="submit" formaction="@Url.Action("SaveDraft")" class="btn btn-outline-secondary">Save Draft</button>
+    </div>
+</form>

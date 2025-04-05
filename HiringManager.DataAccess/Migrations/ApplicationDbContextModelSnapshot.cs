@@ -17,12 +17,12 @@ namespace HiringManager.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("HiringManager.Models.ApplicationDetail", b =>
+            modelBuilder.Entity("HiringManager.Models.ApplicationDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,7 +35,8 @@ namespace HiringManager.DataAccess.Migrations
 
                     b.Property<string>("ApplicationId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -55,7 +56,6 @@ namespace HiringManager.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -63,10 +63,10 @@ namespace HiringManager.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationSet");
+                    b.ToTable("ApplicationDetails");
                 });
 
-            modelBuilder.Entity("HiringManager.Models.EducationDetail", b =>
+            modelBuilder.Entity("HiringManager.Models.EducationDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,36 +74,41 @@ namespace HiringManager.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ApplicationDetailId")
+                    b.Property<int>("ApplicationDetailsId")
                         .HasColumnType("int");
 
                     b.Property<string>("CollegeUniversity")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("HighestQualification")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("PassoutYear")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("PointerPercentage")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("PointerPercentage")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Stream")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationDetailId")
+                    b.HasIndex("ApplicationDetailsId")
                         .IsUnique();
 
-                    b.ToTable("EducationSet");
+                    b.ToTable("EducationDetails");
                 });
 
-            modelBuilder.Entity("HiringManager.Models.ExperienceDetail", b =>
+            modelBuilder.Entity("HiringManager.Models.ExperienceDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,37 +116,41 @@ namespace HiringManager.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ApplicationDetailId")
+                    b.Property<int>("ApplicationDetailsId")
                         .HasColumnType("int");
 
                     b.Property<string>("CurrentCompany")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PreviousCompanies")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Roles")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Skills")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                    b.Property<decimal>("TotalExperience")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("TotalExp")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationDetailId")
+                    b.HasIndex("ApplicationDetailsId")
                         .IsUnique();
 
-                    b.ToTable("ExperienceSet");
+                    b.ToTable("ExperienceDetails");
                 });
 
-            modelBuilder.Entity("HiringManager.Models.PersonalDetail", b =>
+            modelBuilder.Entity("HiringManager.Models.PersonalDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -151,74 +160,75 @@ namespace HiringManager.DataAccess.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("ApplicationDetailId")
+                    b.Property<int>("ApplicationDetailsId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationDetailId")
+                    b.HasIndex("ApplicationDetailsId")
                         .IsUnique();
 
-                    b.ToTable("PersonalSet");
+                    b.ToTable("PersonalDetails");
                 });
 
-            modelBuilder.Entity("HiringManager.Models.EducationDetail", b =>
+            modelBuilder.Entity("HiringManager.Models.EducationDetails", b =>
                 {
-                    b.HasOne("HiringManager.Models.ApplicationDetail", "ApplicationDetail")
-                        .WithOne("EducationDetail")
-                        .HasForeignKey("HiringManager.Models.EducationDetail", "ApplicationDetailId")
+                    b.HasOne("HiringManager.Models.ApplicationDetails", "ApplicationDetails")
+                        .WithOne("EducationDetails")
+                        .HasForeignKey("HiringManager.Models.EducationDetails", "ApplicationDetailsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApplicationDetail");
+                    b.Navigation("ApplicationDetails");
                 });
 
-            modelBuilder.Entity("HiringManager.Models.ExperienceDetail", b =>
+            modelBuilder.Entity("HiringManager.Models.ExperienceDetails", b =>
                 {
-                    b.HasOne("HiringManager.Models.ApplicationDetail", "ApplicationDetail")
-                        .WithOne("ExperienceDetail")
-                        .HasForeignKey("HiringManager.Models.ExperienceDetail", "ApplicationDetailId")
+                    b.HasOne("HiringManager.Models.ApplicationDetails", "ApplicationDetails")
+                        .WithOne("ExperienceDetails")
+                        .HasForeignKey("HiringManager.Models.ExperienceDetails", "ApplicationDetailsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApplicationDetail");
+                    b.Navigation("ApplicationDetails");
                 });
 
-            modelBuilder.Entity("HiringManager.Models.PersonalDetail", b =>
+            modelBuilder.Entity("HiringManager.Models.PersonalDetails", b =>
                 {
-                    b.HasOne("HiringManager.Models.ApplicationDetail", "ApplicationDetail")
-                        .WithOne("PersonalDetail")
-                        .HasForeignKey("HiringManager.Models.PersonalDetail", "ApplicationDetailId")
+                    b.HasOne("HiringManager.Models.ApplicationDetails", "ApplicationDetails")
+                        .WithOne("PersonalDetails")
+                        .HasForeignKey("HiringManager.Models.PersonalDetails", "ApplicationDetailsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApplicationDetail");
+                    b.Navigation("ApplicationDetails");
                 });
 
-            modelBuilder.Entity("HiringManager.Models.ApplicationDetail", b =>
+            modelBuilder.Entity("HiringManager.Models.ApplicationDetails", b =>
                 {
-                    b.Navigation("EducationDetail")
-                        .IsRequired();
+                    b.Navigation("EducationDetails");
 
-                    b.Navigation("ExperienceDetail")
-                        .IsRequired();
+                    b.Navigation("ExperienceDetails");
 
-                    b.Navigation("PersonalDetail")
-                        .IsRequired();
+                    b.Navigation("PersonalDetails");
                 });
 #pragma warning restore 612, 618
         }

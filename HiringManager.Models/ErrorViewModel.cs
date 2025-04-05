@@ -1,4 +1,4 @@
-namespace HiringManager.Web.Models
+namespace HiringManager.Models
 {
     public class ErrorViewModel
     {

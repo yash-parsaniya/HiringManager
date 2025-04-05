@@ -1,0 +1,35 @@
+﻿@using HiringManager.Models.ViewModel
+@model ApplicationFormViewModel
+
+<form asp-action="SavePersonalDetails" method="post">
+    <input type="hidden" name="sessionId" value="@Model.ApplicationDetails.SessionId" />
+
+    <div class="form-group">
+        <label asp-for="PersonalDetails.Name">Full Name</label>
+        <input asp-for="PersonalDetails.Name" class="form-control" />
+        <span asp-validation-for="PersonalDetails.Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PersonalDetails.Email">Email Address</label>
+        <input asp-for="PersonalDetails.Email" class="form-control" />
+        <span asp-validation-for="PersonalDetails.Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PersonalDetails.PhoneNumber">Phone Number</label>
+        <input asp-for="PersonalDetails.PhoneNumber" class="form-control" />
+        <span asp-validation-for="PersonalDetails.PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PersonalDetails.Address">Address</label>
+        <textarea asp-for="PersonalDetails.Address" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="PersonalDetails.Address" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-4">
+        <button type="submit" class="btn btn-primary">Save & Next</button>
+        <button type="submit" formaction="@Url.Action("SaveDraft")" class="btn btn-secondary">Save Draft</button>
+    </div>
+</form>

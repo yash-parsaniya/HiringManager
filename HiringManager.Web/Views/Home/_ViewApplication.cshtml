@@ -1,0 +1,127 @@
+﻿@model ApplicationDetails
+
+<div class="application-details">
+    <!-- Personal Details -->
+    <div class="detail-section mb-4">
+        <h4 class="section-header text-primary">
+            <i class="fas fa-user mr-2"></i>Personal Details
+        </h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Full Name:</label>
+                    <span class="detail-value">@Model.PersonalDetails?.Name</span>
+                </div>
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Email:</label>
+                    <span class="detail-value">@Model.PersonalDetails?.Email</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Phone:</label>
+                    <span class="detail-value">@Model.PersonalDetails?.PhoneNumber</span>
+                </div>
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Address:</label>
+                    <span class="detail-value">@Model.PersonalDetails?.Address</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Education Details -->
+    <div class="detail-section mb-4">
+        <h4 class="section-header text-primary">
+            <i class="fas fa-graduation-cap mr-2"></i>Education Details
+        </h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Highest Qualification:</label>
+                    <span class="detail-value">@Model.EducationDetails?.HighestQualification</span>
+                </div>
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Institution:</label>
+                    <span class="detail-value">@Model.EducationDetails?.CollegeUniversity</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Field of Study:</label>
+                    <span class="detail-value">@Model.EducationDetails?.Stream</span>
+                </div>
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Year/Score:</label>
+                    <span class="detail-value">@Model.EducationDetails?.PassoutYear - @Model.EducationDetails?.PointerPercentage</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Details -->
+    <div class="detail-section">
+        <h4 class="section-header text-primary">
+            <i class="fas fa-briefcase mr-2"></i>Experience Details
+        </h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Total Experience:</label>
+                    <span class="detail-value">@Model.ExperienceDetails?.TotalExp</span>
+                </div>
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Current Company:</label>
+                    <span class="detail-value">@Model.ExperienceDetails?.CurrentCompany</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Key Skills:</label>
+                    <span class="detail-value">@Model.ExperienceDetails?.Skills</span>
+                </div>
+                <div class="detail-item mb-3">
+                    <label class="detail-label">Previous Roles:</label>
+                    <span class="detail-value">@Model.ExperienceDetails?.Roles</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 pt-3 border-top">
+        <p class="text-muted mb-1">
+            <small>Application ID: @Model.ApplicationId</small>
+        </p>
+        <p class="text-muted">
+            <small>Submitted on: @Model.CreatedDate.ToString("f")</small>
+        </p>
+    </div>
+</div>
+
+<style>
+    .detail-section {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 2rem;
+    }
+
+    .section-header {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+        min-width: 150px;
+        display: inline-block;
+    }
+
+    .detail-value {
+        background-color: #f8f9fa;
+        padding: 0.5rem;
+        border-radius: 4px;
+        display: inline-block;
+        min-width: 200px;
+    }
+</style>

@@ -1,8 +1,245 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using HiringManager.Models.ViewModel
+@model ApplicationListViewModel
+
+@{
+    ViewData["Title"] = "Job Applications Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-file-alt text-primary me-2"></i>Job Applications
+        </h2>
+        <a asp-controller="Applications" asp-action="ApplicationForm" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>New Application
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Applications.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Application ID</th>
+                                <th>Applicant</th>
+                                <th>Contact</th>
+                                <th>Submitted</th>
+                                <th>Status</th>
+                                <th class="pe-4" style="width: 280px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var application in Model.Applications)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <span class="fw-semibold">@application.ApplicationId</span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">@application.PersonalDetails?.Name</div>
+                                        <small class="text-muted">@application.PersonalDetails?.Email</small>
+                                    </td>
+                                    <td>
+                                        <div><i class="fas fa-phone text-muted me-2"></i>@application.PersonalDetails?.PhoneNumber</div>
+                                    </td>
+                                    <td>
+                                        @application.CreatedDate.ToString("dd MMM yyyy")
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success bg-opacity-10 text-success">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td class="pe-4">
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-sm btn-outline-primary flex-grow-1"
+                                                    onclick="viewApplication('@application.ApplicationId')">
+                                                <i class="fas fa-eye me-1"></i>View
+                                            </button>
+                                            <a asp-action="EditApplication"
+                                               asp-route-applicationId="@application.ApplicationId"
+                                               class="btn btn-sm btn-outline-secondary flex-grow-1">
+                                                <i class="fas fa-edit me-1"></i>Edit
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-danger flex-grow-1"
+                                                    onclick="confirmDeactivate('@application.ApplicationId')">
+                                                <i class="fas fa-trash-alt me-1"></i>Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-white text-muted">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        Showing @Model.Applications.Count applications
+                    </div>
+                    <div>
+                        <i class="fas fa-info-circle me-2"></i>Last updated @DateTime.Now.ToString("hh:mm tt")
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5 bg-light rounded">
+            <div class="mb-4">
+                <i class="fas fa-file-alt fa-3x text-primary opacity-25"></i>
+            </div>
+            <h4 class="text-muted mb-3">No applications submitted yet</h4>
+            <p class="text-muted mb-4">Get started by creating a new job application</p>
+            <a asp-controller="Applications" asp-action="ApplicationForm" class="btn btn-primary px-4">
+                <i class="fas fa-plus me-2"></i>Create Application
+            </a>
+        </div>
+    }
 </div>
+
+<!-- View Application Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-alt me-2"></i>Application Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading application details...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deactivation
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to deactivate this application? This action will archive the application.</p>
+                <p class="fw-bold">Application ID: <span id="appIdToDelete" class="text-primary"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash-alt me-1"></i>Deactivate
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // View Application Function
+        function viewApplication(appId) {
+            $('#viewModal').modal('show');
+            $('#viewModalBody').load('@Url.Action("ViewApplicationPartial", "Home")?id=' + appId, function() {
+                // Content loaded
+            });
+        }
+
+        // Delete Confirmation
+        function confirmDeactivate(appId) {
+            $('#appIdToDelete').text(appId);
+            $('#deleteModal').modal('show');
+
+            $('#confirmDeleteBtn').off('click').on('click', function() {
+                $.ajax({
+                    url: '@Url.Action("DeactivateApplication", "Home")',
+                    type: 'POST',
+                    data: { applicationId: appId },
+                    beforeSend: function() {
+                        $('#confirmDeleteBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Processing...');
+                    },
+                    success: function() {
+                        $('#deleteModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function() {
+                        alert('Error deactivating application');
+                        $('#confirmDeleteBtn').prop('disabled', false).html('<i class="fas fa-trash-alt me-1"></i>Deactivate');
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            // Initialize tooltips if needed
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}
+
+<style>
+    .table th {
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        border-top: none;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    .btn-sm {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.825rem;
+    }
+
+    .badge {
+        padding: 0.35em 0.65em;
+        font-weight: 500;
+    }
+
+    .modal-header {
+        border-bottom: none;
+    }
+
+    .modal-footer {
+        border-top: none;
+    }
+</style>

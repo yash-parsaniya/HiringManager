@@ -1,0 +1,175 @@
+﻿@using HiringManager.Models.ViewModel
+@model ApplicationFormViewModel
+
+@{
+    ViewData["Title"] = "Job Application Form";
+    var sessionId = Model.ApplicationDetails.SessionId;
+}
+
+<div class="container mt-5">
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ValidationErrors"] is List<string> errors)
+    {
+        <div class="alert alert-warning alert-dismissible fade show">
+            <h5>Please complete these sections:</h5>
+            <ul>
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <h2 class="mb-4">Job Application Form</h2>
+
+    <!-- Progress Indicator -->
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-center @(Model.CurrentStage >= 1 ? "text-primary" : "text-muted")">
+                <i class="bi bi-person-fill fs-3"></i>
+                <div>Personal</div>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <hr class="@(Model.CurrentStage >= 2 ? "border-primary" : "border-secondary")">
+            </div>
+            <div class="text-center @(Model.CurrentStage >= 2 ? "text-primary" : "text-muted")">
+                <i class="bi bi-book-fill fs-3"></i>
+                <div>Education</div>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <hr class="@(Model.CurrentStage >= 3 ? "border-primary" : "border-secondary")">
+            </div>
+            <div class="text-center @(Model.CurrentStage >= 3 ? "text-primary" : "text-muted")">
+                <i class="bi bi-briefcase-fill fs-3"></i>
+                <div>Experience</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link @(Model.CurrentStage == 1 ? "active" : "")"
+                       id="personal-tab" data-bs-toggle="tab" href="#personal">
+                        <i class="bi bi-person-fill me-2"></i>Personal Details
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.CurrentStage == 2 ? "active" : "")
+                                  @(Model.CurrentStage < 2 ? "disabled" : "")"
+                       id="education-tab" data-bs-toggle="tab" href="#education">
+                        <i class="bi bi-book-fill me-2"></i>Education Details
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.CurrentStage == 3 ? "active" : "")
+                                  @(Model.CurrentStage < 3 ? "disabled" : "")"
+                       id="experience-tab" data-bs-toggle="tab" href="#experience">
+                        <i class="bi bi-briefcase-fill me-2"></i>Experience Details
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+            <div class="tab-content">
+                <div class="tab-pane fade @(Model.CurrentStage == 1 ? "show active" : "")" id="personal">
+                    <partial name="_PersonalDetails" model="Model" />
+                </div>
+
+                <div class="tab-pane fade @(Model.CurrentStage == 2 ? "show active" : "")" id="education">
+                    <partial name="_EducationDetails" model="Model" />
+                </div>
+
+                <div class="tab-pane fade @(Model.CurrentStage == 3 ? "show active" : "")" id="experience">
+                    <partial name="_ExperienceDetails" model="Model" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+
+    <script>
+        $(function () {
+            // Enable tooltips
+            $('[data-bs-toggle="tooltip"]').tooltip();
+
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').alert('close');
+            }, 5000);
+
+            // Preserve tab on postback
+            var currentTab = localStorage.getItem('currentTab');
+            if (currentTab) {
+                var tabInstance = new bootstrap.Tab($('.nav-tabs a[href="' + currentTab + '"]'));
+                tabInstance.show();
+            }
+
+            $('form').submit(function() {
+                var activeTab = $('.nav-tabs .active a').attr('href');
+                localStorage.setItem('currentTab', activeTab);
+            });
+
+            // Enable tab switching based on current stage
+            const currentStage = @Model.CurrentStage;
+            if (currentStage > 1) {
+                $('#personal-tab').removeClass('disabled');
+            }
+            if (currentStage > 2) {
+                $('#education-tab').removeClass('disabled');
+            }
+
+            // Prevent switching to disabled tabs
+            $('.nav-tabs a').on('click', function (e) {
+                if ($(this).hasClass('disabled')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .nav-tabs .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-tabs .nav-link.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .alert {
+            transition: all 0.5s ease;
+        }
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+    </style>
+}
